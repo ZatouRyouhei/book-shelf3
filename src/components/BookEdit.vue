@@ -373,7 +373,7 @@ img {
 .infoLink {
   position: absolute;
   bottom:  0;                  /* 位置指定 */
-  left:  0;                    /* 位置指定 */
+  right:  0;                    /* 位置指定 */
 }
 .dialogButton {
   position: absolute;
