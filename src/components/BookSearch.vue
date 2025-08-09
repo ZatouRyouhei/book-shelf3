@@ -5,7 +5,7 @@ import axios from "@/axios"
 import Constant from "@/constant"
 import {useUserStore} from "@/stores/user"
 import {Search} from '@element-plus/icons-vue'
-import type {TableInstance } from "element-plus"
+import type {TableInstance, TableColumnCtx } from "element-plus"
 
 // store設定
 const userStore = useUserStore()
@@ -79,6 +79,19 @@ const bookSearch = () => {
         tableLoadFlg.value = false
         searchLoadFlg.value = false
     })
+}
+const formatDate = (row: any, column: TableColumnCtx, cellValue: any, index: number) : string => {
+    // yyyy-MM-ddをyyyy年MM月dd日にする。
+    if (cellValue) {
+        let year = cellValue.slice(0, 4)
+        let month = cellValue.slice(5, 7)
+        month = Number(month)
+        let day = cellValue.slice(8, 10)
+        day = Number(day)
+        return year + "年" + month + "月" + day + "日"
+    } else {
+        return "-"
+    }
 }
 // 検索結果のページを切り替えたとき
 const pageChange = (page: number) => {
@@ -185,7 +198,7 @@ defineExpose({
         stripe
     >
         <el-table-column type="index" />
-        <el-table-column prop="completeDate" label="読了日"/>
+        <el-table-column prop="completeDate" label="読了日" v-bind:formatter="formatDate"/>
         <el-table-column prop="title" label="タイトル"/>
         <el-table-column prop="author" label="著者"/>
         <el-table-column prop="genre.name" label="ジャンル"/>
