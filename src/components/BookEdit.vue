@@ -37,6 +37,7 @@ const bookRegistForm = reactive({
     author: props.targetBook.author,
     publisher: props.targetBook.publisher,
     published: props.targetBook.published,
+    buyDate: props.targetBook.buyDate,
     completeDate: props.targetBook.completeDate,
     memo: props.targetBook.memo,
     rate: props.targetBook.rate,
@@ -52,6 +53,7 @@ watch([props.targetBook, props.paramEditFlg], () => {
     bookRegistForm.author = props.targetBook.author
     bookRegistForm.publisher = props.targetBook.publisher
     bookRegistForm.published = props.targetBook.published
+    bookRegistForm.buyDate = props.targetBook.buyDate
     bookRegistForm.completeDate = props.targetBook.completeDate
     bookRegistForm.memo = props.targetBook.memo
     bookRegistForm.rate = props.targetBook.rate
@@ -66,6 +68,7 @@ interface RuleForm {
     price: number
     publisher: string
     published: string
+    buyDate: string
     completeDate: string
     genre: number
     rate: number
@@ -87,6 +90,9 @@ const rules = reactive<FormRules<RuleForm>>({
     ],
     published: [
         {required: true, message: '発売日が未入力です。', trigger: 'blur'}
+    ],
+    buyDate: [
+        {required: true, message: '購入日が未入力です。', trigger: 'blur'}
     ],
     rate: [
         {required: true, message: '評価が未入力です。', trigger: 'blur'}
@@ -117,6 +123,7 @@ const registBook = async (formEl: FormInstance | undefined) => {
                 author: bookRegistForm.author,
                 publisher: bookRegistForm.publisher,
                 published: bookRegistForm.published,
+                buyDate: bookRegistForm.buyDate,
                 completeDate: bookRegistForm.completeDate,
                 memo: bookRegistForm.memo,
                 rate: bookRegistForm.rate,
@@ -130,9 +137,9 @@ const registBook = async (formEl: FormInstance | undefined) => {
             axios.post<number>(Constant.URL_BOOK_REGIST, book).then((res) => {
                 bookRegistForm.seqNo = res.data
                 ElMessage({
-                showClose: true,
-                message: '登録が完了しました。',
-                type: 'success',
+                    showClose: true,
+                    message: '登録が完了しました。',
+                    type: 'success',
                 })
                 // 編集中フラグをオン
                 editFlg.value = true
@@ -163,7 +170,7 @@ const resetForm = (formEl: FormInstance | undefined) => {
     formEl.resetFields()
     // 行の選択状態をリセットする
     emit("resetRow")
-    // propsをクリアする。クリアしないと次に同じ行をクリックしたときに反応しなくなる。
+    // propsをクリアする。
     emit("resetProps")
 }
 // 削除する処理
@@ -289,14 +296,28 @@ onMounted(() => {
                 value-format="YYYY-MM-DD"
             />
         </el-form-item>
-        <el-form-item label="読了日" size="small" prop="completeDate">
-            <el-date-picker
-                v-model="bookRegistForm.completeDate"
-                type="date"
-                format="YYYY年M月D日"
-                value-format="YYYY-MM-DD"
-            />
-        </el-form-item>
+        <el-row>
+            <el-col :span="12">
+                <el-form-item label="購入日" size="small" prop="buyDate">
+                    <el-date-picker
+                        v-model="bookRegistForm.buyDate"
+                        type="date"
+                        format="YYYY年M月D日"
+                        value-format="YYYY-MM-DD"
+                    />
+                </el-form-item>
+            </el-col>
+            <el-col :span="12">
+                <el-form-item label="読了日" size="small" prop="completeDate">
+                    <el-date-picker
+                        v-model="bookRegistForm.completeDate"
+                        type="date"
+                        format="YYYY年M月D日"
+                        value-format="YYYY-MM-DD"
+                    />
+                </el-form-item>
+            </el-col>
+        </el-row>
         <el-form-item label="ジャンル" prop="genre">
             <el-select size="small" v-model="bookRegistForm.genre" placeholder="ジャンル">
                 <el-option

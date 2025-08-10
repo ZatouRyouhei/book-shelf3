@@ -18,6 +18,7 @@ export interface BookType {
 	price: number
 	publisher: string
 	published: string
+	buyDate: string
 	completeDate: string
 	genre: GenreType
 	memo: string
@@ -33,6 +34,7 @@ export interface BookFormType {
     author: string,
     publisher: string,
     published: string,
+	buyDate: string,
     completeDate: string,
     memo: string,
     rate: number,

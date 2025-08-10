@@ -16,6 +16,7 @@ const paramTargetBook = ref<BookFormType>({
     author: "",
     publisher: "",
     published: "",
+    buyDate: "",
     completeDate: "",
     memo: "",
     rate: 3,
@@ -34,6 +35,7 @@ const rowClick = (selectedBook: BookType): void => {
     paramTargetBook.value.author = selectedBook.author
     paramTargetBook.value.publisher = selectedBook.publisher
     paramTargetBook.value.published = selectedBook.published
+    paramTargetBook.value.buyDate = selectedBook.buyDate
     paramTargetBook.value.completeDate = selectedBook.completeDate
     paramTargetBook.value.memo = selectedBook.memo
     paramTargetBook.value.rate = selectedBook.rate
@@ -60,6 +62,7 @@ const resetProps = () => {
     paramTargetBook.value.author = ""
     paramTargetBook.value.publisher = ""
     paramTargetBook.value.published = ""
+    paramTargetBook.value.buyDate = ""
     paramTargetBook.value.completeDate = ""
     paramTargetBook.value.memo = ""
     paramTargetBook.value.rate = 3

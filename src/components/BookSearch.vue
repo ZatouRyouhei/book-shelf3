@@ -198,6 +198,7 @@ defineExpose({
         stripe
     >
         <el-table-column type="index" />
+        <el-table-column prop="buyDate" label="購入日" v-bind:formatter="formatDate"/>
         <el-table-column prop="completeDate" label="読了日" v-bind:formatter="formatDate"/>
         <el-table-column prop="title" label="タイトル"/>
         <el-table-column prop="author" label="著者"/>
