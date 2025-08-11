@@ -4,8 +4,9 @@ import type { BookType, SearchCondType, GenreType } from '@/interfaces';
 import axios from "@/axios"
 import Constant from "@/constant"
 import {useUserStore} from "@/stores/user"
-import {Search} from '@element-plus/icons-vue'
+import {Search, Download} from '@element-plus/icons-vue'
 import type {TableInstance, TableColumnCtx } from "element-plus"
+import { saveAs } from "file-saver"
 
 // store設定
 const userStore = useUserStore()
@@ -32,6 +33,8 @@ const searchBookListRef = ref<TableInstance>()
 const searchLoadFlg = ref<boolean>(false)
 // 検索結果テーブルのローディングフラグ
 const tableLoadFlg = ref<boolean>(false)
+// 台帳Excelのダウンロードフラグ
+const downloadFlg = ref<boolean>(false)
 // 検索結果の1ページ当たりの件数
 const pageSize = ref<number>(Constant.PAGE_SIZE)
 // 検索結果の現在のページ数
@@ -107,6 +110,32 @@ const resetRow = () => {
     // 行のハイライトはリセットされるが、選択状態はリセットされない模様
     searchBookListRef.value!.setCurrentRow(null)
 }
+// Excel台帳出力
+const downloadExcel = () => {
+    downloadFlg.value = true
+    const searchCond: SearchCondType = {
+        userId: userStore.id,
+        title: bookSearchForm.title,
+        author: bookSearchForm.author,
+        completeDateFrom: bookSearchForm.completeDate ? bookSearchForm.completeDate[0] : "", // null,undefined,0,空文字（""）はfalseとなる。
+        completeDateTo: bookSearchForm.completeDate ? bookSearchForm.completeDate[1] : "",
+        genre: bookSearchForm.genre ? bookSearchForm.genre : 0,
+        rate: bookSearchForm.rate ? bookSearchForm.rate : 0,
+    }
+    axios.post(Constant.URL_BOOK_DOWNLOAD, searchCond, {
+        responseType: "blob",
+        headers: {
+            "Accept": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        }
+    }).then((res) => {
+        const blob = new Blob([res.data], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        });
+        saveAs(blob, "台帳.xlsx")
+    }).finally(() => {
+        downloadFlg.value = false
+    })
+}
 
 // 初期処理
 onMounted(() => {
@@ -167,21 +196,30 @@ defineExpose({
         </el-col>
         <el-col v-bind:span="12">
             <el-form-item>
-            評価：
-            <el-rate
-                v-model="bookSearchForm.rate"
-                size="small"
-                v-bind:colors="['#99A9BF', '#F7BA2A', '#FF9900']"
-                v-bind:texts="['面白くない', 'あまり面白くない', '普通', '面白い', 'とても面白い']"
-                show-text
-                clearable
-            />
+                評価：
+                <el-rate
+                    v-model="bookSearchForm.rate"
+                    size="small"
+                    v-bind:colors="['#99A9BF', '#F7BA2A', '#FF9900']"
+                    v-bind:texts="['面白くない', 'あまり面白くない', '普通', '面白い', 'とても面白い']"
+                    show-text
+                    clearable
+                />
             </el-form-item>
         </el-col>
         <el-col v-bind:span="6">
-            <el-form-item>
-            <el-button type="primary" v-on:click="bookSearchClick" v-bind:icon="Search" v-bind:loading="searchLoadFlg">検索</el-button>
-            </el-form-item>
+            <el-row>
+                <el-col v-bind:span="12">
+                    <el-form-item>
+                        <el-button type="primary" v-on:click="bookSearchClick" v-bind:icon="Search" v-bind:loading="searchLoadFlg">検索</el-button>
+                    </el-form-item>
+                </el-col>
+                <el-col v-bind:span="12">
+                    <el-form-item>
+                        <el-button type="success" v-on:click="downloadExcel" v-bind:icon="Download" v-bind:loading="downloadFlg">台帳</el-button>
+                    </el-form-item>
+                </el-col>
+            </el-row>
         </el-col>
         </el-row>
     </el-form>
