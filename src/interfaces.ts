@@ -3,6 +3,7 @@ export interface UserType {
 	password: string
 	name: string
 	roleName: string
+	mailAddress: string
 	token: string
 }
 

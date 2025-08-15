@@ -68,7 +68,11 @@ const resetProps = () => {
     paramTargetBook.value.rate = 3
     paramTargetBook.value.genre = 1
     paramTargetBook.value.info = ""
-    paramEditFlg.value = false
+}
+// 更新中フラグをセットする
+const setEditFlg = (flg: boolean) => {
+    console.log("Top.setEditFlg", flg)
+    paramEditFlg.value = flg
 }
 </script>
 
@@ -91,7 +95,9 @@ const resetProps = () => {
                 v-bind:paramEditFlg="paramEditFlg"
                 v-on:research="research"
                 v-on:resetRow="resetRow"
-                v-on:resetProps="resetProps"/>
+                v-on:resetProps="resetProps"
+                v-on:setEditFlg="setEditFlg"
+            />
         </el-col>
     </el-row>
 </template>

@@ -16,12 +16,14 @@ const userRegistForm = reactive({
     id: "",
     name: "",
     role: "",
+    mailAddress: "",
 })
 // バリデーション設定
 interface RuleForm {
     id: string
     name: string
     role: string
+    mailAddress: string
 }
 const userFormRef = ref<FormInstance>()
 const rules = reactive<FormRules<RuleForm>>({
@@ -34,6 +36,10 @@ const rules = reactive<FormRules<RuleForm>>({
     ],
     role: [
         {required: true, message: "権限が未入力です。", trigger: "blur"}
+    ],
+    mailAddress: [
+        {required: true, message: "メールアドレスが未入力です。", trigger: "blur"},
+        {type: "email", message: "メールアドレスの形式で入力してください。", trigger: "blur"}
     ]
 })
 // 更新フラグ
@@ -74,6 +80,7 @@ const rowClick = (row: UserType) => {
     userRegistForm.id = row.id
     userRegistForm.name = row.name
     userRegistForm.role = row.roleName
+    userRegistForm.mailAddress = row.mailAddress
     // 更新フラグをオン
     editFlg.value = true
 }
@@ -88,6 +95,7 @@ const registUser = async (formEl: FormInstance | undefined) => {
                 password: "",
                 name: userRegistForm.name,
                 roleName: userRegistForm.role,
+                mailAddress: userRegistForm.mailAddress,
                 token: "",
             }
             axios.post(Constant.URL_USER_REGIST, user).then(() => {
@@ -176,11 +184,12 @@ onMounted(() => {
                 v-bind:data="userList"
                 highlight-current-row
                 stripe
-                v-on:current-change = "rowClick"
+                v-on:current-change="rowClick"
                 v-loading="tableLoadFlg"
             >
                 <el-table-column prop="id" label="ID"/>
                 <el-table-column prop="name" label="氏名"/>
+                <el-table-column prop="mailAddress" label="メールアドレス"/>
                 <el-table-column prop="roleName" label="権限" v-bind:formatter="formatRoleName"/>
             </el-table>
         </el-col>
@@ -193,6 +202,9 @@ onMounted(() => {
                 </el-form-item>
                 <el-form-item prop="name">
                     <el-input type="text" v-model="userRegistForm.name" placeholder="氏名"/>
+                </el-form-item>
+                <el-form-item prop="mailAddress">
+                    <el-input type="text" v-model="userRegistForm.mailAddress" placeholder="メールアドレス"/>
                 </el-form-item>
                 <el-form-item prop="role">
                     <el-select v-model="userRegistForm.role" placeholder="権限">
@@ -207,7 +219,7 @@ onMounted(() => {
                         v-bind:loading="registLoadFlg"
                         v-on:click="registUser(userFormRef)"
                     >
-                    登録
+                        登録
                     </el-button>
                     <el-popconfirm
                         confirmButtonText="はい"

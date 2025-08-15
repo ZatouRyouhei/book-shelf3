@@ -59,6 +59,7 @@ const changePassword = async (formEl: FormInstance | undefined) => {
                     password: sha512.sha512(passwordForm.newPassword),
                     name: "",
                     roleName: "",
+                    mailAddress: "",
                     token: ""
                 }
                 axios.post(Constant.URL_USER_CHANGEPASSWORD, userObj).then(() => {

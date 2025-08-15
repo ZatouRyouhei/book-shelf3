@@ -22,12 +22,11 @@ interface Emits {
     (event: "research"): void
     (event: "resetRow"): void
     (event: "resetProps"): void
+    (event: "setEditFlg", flg: boolean): void
 }
 const emit = defineEmits<Emits>()
 // プルダウン用ジャンル一覧
 const genreList = ref<GenreType[]>([])
-// 更新中のフラグ　検索結果の行をクリックしたときにtrue
-const editFlg = ref<boolean>(props.paramEditFlg)
 // 登録項目
 const bookRegistForm = reactive({
     seqNo: props.targetBook.seqNo,
@@ -45,7 +44,7 @@ const bookRegistForm = reactive({
     info: props.targetBook.info
 })
 // 検索結果の行がクリックされたことを検知してフォームに値を設定する。
-watch([props.targetBook, props.paramEditFlg], () => {
+watch(props.targetBook, () => {
     bookRegistForm.seqNo = props.targetBook.seqNo
     bookRegistForm.image = props.targetBook.image
     bookRegistForm.title = props.targetBook.title
@@ -59,7 +58,6 @@ watch([props.targetBook, props.paramEditFlg], () => {
     bookRegistForm.rate = props.targetBook.rate
     bookRegistForm.genre = props.targetBook.genre
     bookRegistForm.info = props.targetBook.info
-    editFlg.value = props.paramEditFlg
 })
 // バリデーション設定
 interface RuleForm {
@@ -141,8 +139,8 @@ const registBook = async (formEl: FormInstance | undefined) => {
                     message: '登録が完了しました。',
                     type: 'success',
                 })
-                // 編集中フラグをオン
-                editFlg.value = true
+                // 更新中フラグをオンにする。
+                emit("setEditFlg", true)
                 // 再検索を行うために親コンポーネントにイベントを送信
                 emit("research")
             }).catch((error) => {
@@ -170,8 +168,10 @@ const resetForm = (formEl: FormInstance | undefined) => {
     formEl.resetFields()
     // 行の選択状態をリセットする
     emit("resetRow")
-    // propsをクリアする。
+    // フォームをクリアする。
     emit("resetProps")
+    // 更新中フラグをリセットする。
+    emit("setEditFlg", false)
 }
 // 削除する処理
 const deleteBook = () => {
@@ -254,7 +254,7 @@ onMounted(() => {
                 詳細
             </el-link>
             <!-- google検索ダイアログ表示ボタン -->
-            <el-button type="success" class="dialogButton" :icon="Plus" circle v-on:click="dialogVisible=true" v-bind:disabled="editFlg"/>
+            <el-button type="success" class="dialogButton" :icon="Plus" circle v-on:click="dialogVisible=true" v-bind:disabled="paramEditFlg"/>
         </div>
         <el-form-item prop="image">
             <el-input type="hidden" v-model="bookRegistForm.image"/>
@@ -366,7 +366,7 @@ onMounted(() => {
                 v-on:confirm="deleteBook"
             >
                 <template #reference>
-                    <el-button type="danger" v-bind:icon="Delete" v-bind:loading="deleteLoadFlg" v-bind:disabled="!editFlg">削除</el-button>
+                    <el-button type="danger" v-bind:icon="Delete" v-bind:loading="deleteLoadFlg" v-bind:disabled="!paramEditFlg">削除</el-button>
                 </template>
             </el-popconfirm>
         </el-form-item>

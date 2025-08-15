@@ -48,6 +48,7 @@ const onSubmit = async (formEl: FormInstance | undefined) => {
                 password: sha512.sha512(form.password),
                 name: "",
                 roleName: "",
+                mailAddress: "",
                 token: "",
             }
             axios.post<UserType>(Constant.URL_USER_LOGIN, loginObj).then((res) => {
