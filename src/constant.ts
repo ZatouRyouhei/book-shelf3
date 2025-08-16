@@ -4,6 +4,7 @@ const URL_USER_CHANGEPASSWORD = URL_BASE + 'user/changePassword/'
 const URL_USER_GETLIST = URL_BASE + 'user/getList/'
 const URL_USER_REGIST = URL_BASE + 'user/regist/'
 const URL_USER_DELETE = URL_BASE + 'user/delete/'
+const URL_USER_RESET_PASSWORD = URL_BASE + "user/reset/"
 const URL_GENRE_GETLIST = URL_BASE + 'genre/getList/'
 const URL_BOOK_REGIST = URL_BASE + 'book/regist/'
 const URL_BOOK_SEARCH = URL_BASE + 'book/search/'
@@ -18,6 +19,7 @@ export default {
     URL_USER_GETLIST,
     URL_USER_REGIST,
     URL_USER_DELETE,
+    URL_USER_RESET_PASSWORD,
     URL_GENRE_GETLIST,
     URL_BOOK_REGIST,
     URL_BOOK_SEARCH,

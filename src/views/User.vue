@@ -50,6 +50,8 @@ const tableLoadFlg = ref<boolean>(false)
 const registLoadFlg = ref<boolean>(false)
 // 削除処理のローディングフラグ
 const deleteLoadFlg = ref<boolean>(false)
+// パスワード初期化のローディングフラグ
+const resetPasswordLoadingFlg = ref<boolean>(false)
 
 // ユーザ一覧取得
 const searchUser = () => {
@@ -100,9 +102,9 @@ const registUser = async (formEl: FormInstance | undefined) => {
             }
             axios.post(Constant.URL_USER_REGIST, user).then(() => {
                 ElMessage({
-                showClose: true,
-                message: '登録が完了しました。',
-                type: 'success',
+                    showClose: true,
+                    message: '登録が完了しました。',
+                    type: 'success',
                 })
                 // 再検索処理
                 searchUser()
@@ -165,6 +167,26 @@ const deleteBook = () => {
         })
     }).finally(() => {
         deleteLoadFlg.value = false
+    })
+}
+// パスワード初期化処理
+const resetPassword = () => {
+    resetPasswordLoadingFlg.value = true
+    axios.post(Constant.URL_USER_RESET_PASSWORD + userRegistForm.id).then((res) => {
+        ElMessage({
+            showClose: true,
+            message: 'パスワード初期化が完了しました。',
+            type: 'success',
+        })
+    }).catch((error) => {
+        console.log("パスワード初期化失敗", error.response)
+        ElMessage({
+            showClose: true,
+            message: 'パスワード初期化が失敗しました。',
+            type: 'error',
+        })
+    }).finally(() => {
+        resetPasswordLoadingFlg.value = false
     })
 }
 // 初期処理
@@ -241,6 +263,17 @@ onMounted(() => {
                     >
                         <template #reference>
                         <el-button type="danger" v-bind:icon="Delete" v-bind:loading="deleteLoadFlg" v-bind:disabled="!editFlg">削除</el-button>
+                        </template>
+                    </el-popconfirm>
+                    <el-popconfirm
+                        confirmButtonText="はい"
+                        cancelButtonText="いいえ"
+                        title="パスワードを初期化してよろしいですか？"
+                        iconColor="red"
+                        v-on:confirm="resetPassword"
+                    >
+                        <template #reference>
+                        <el-button type="warning" v-bind:loading="resetPasswordLoadingFlg" v-bind:disabled="!editFlg">パスワード初期化</el-button>
                         </template>
                     </el-popconfirm>
                 </el-form-item>
