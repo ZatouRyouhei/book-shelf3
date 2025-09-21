@@ -25,7 +25,11 @@ const router = createRouter({
       children: [
         {
           path: "user",
-          component: () => import("../views/User.vue")
+          component: () => import('../views/User.vue'),
+        },
+        {
+          path: "batch",
+          component: () => import("../views/Batch.vue")
         }
       ]
     },

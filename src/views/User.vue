@@ -4,7 +4,7 @@ import type {UserType} from "@/interfaces"
 import Constant from "@/constant"
 import axios from "@/axios"
 import { ElMessage } from 'element-plus'
-import {Search, Edit, Delete, Plus, InfoFilled} from '@element-plus/icons-vue'
+import {Edit, Delete} from '@element-plus/icons-vue'
 import type {FormInstance, FormRules, TableInstance } from "element-plus"
 
 

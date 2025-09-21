@@ -63,3 +63,8 @@ export interface GoogleBookType {
 	image: string
 	info: string
 }
+
+export interface BatchErrorType {
+	lineNo: number
+	errorMsg: string
+}

@@ -6,9 +6,12 @@ import Menu from "@/components/Menu.vue"
 <template>
     <el-row>
         <el-col v-bind:span="18">
-            <el-menu v-bind:default-active="1" mode="horizontal" v-bind:router="true">
+            <el-menu mode="horizontal" v-bind:router="true">
                 <el-menu-item index="/admin/user">
                     ユーザ管理
+                </el-menu-item>
+                <el-menu-item index="/admin/batch">
+                    本情報一括登録
                 </el-menu-item>
             </el-menu>
         </el-col>

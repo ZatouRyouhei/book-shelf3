@@ -234,6 +234,7 @@ defineExpose({
         v-loading="tableLoadFlg"
         class="searchBookList"
         stripe
+        height="100%"
     >
         <el-table-column type="index" />
         <el-table-column prop="buyDate" label="購入日" v-bind:formatter="formatDate"/>
