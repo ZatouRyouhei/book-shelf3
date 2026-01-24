@@ -37,9 +37,35 @@ const tableLoadFlg = ref<boolean>(false)
 const downloadFlg = ref<boolean>(false)
 // 検索結果の1ページ当たりの件数
 const pageSize = ref<number>(Constant.PAGE_SIZE)
+// ページャーの数
+const pageCount = ref<number>(Constant.PAGE_COUNT)
 // 検索結果の現在のページ数
 const currentPage = ref<number>(1)
 
+// ページャーのPC、スマートフォンでのレイアウト切り替え
+const pagerLayout = computed(
+    (): string => {
+        if (window.innerWidth <= 767) {
+            // 画面幅が767px以下（スマートフォン）の場合
+            return "total, pager"
+        } else {
+            // PCの場合
+            return "total, prev, pager, next"
+        }
+    }
+)
+// ページャーのPC、スマートフォンでのサイズ切替
+const pagerSize = computed(
+    (): string => {
+        if (window.innerWidth <= 767) {
+            // 画面幅が767px以下（スマートフォン）の場合はsmall
+            return "small"
+        } else {
+            // PCの場合はdefault
+            return "default"
+        }
+    }
+)
 // 合計金額
 const totalAmount = computed(
     (): string => {
@@ -99,6 +125,20 @@ const formatDate = (row: any, column: TableColumnCtx, cellValue: any, index: num
 // 検索結果のページを切り替えたとき
 const pageChange = (page: number) => {
     currentPage.value = page
+    scrollToTopOnMobile()
+}
+// 画面トップにスクロール
+const scrollToTopOnMobile = (): void => {
+    // 画面幅が767px以下（スマートフォン）の場合のみスクロール
+    if (window.innerWidth <= 767) {
+        // 少し遅延させてDOMの更新を待つ
+        setTimeout(() => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'  // スムーズにスクロール
+            })
+        }, 100)
+    }
 }
 // 検索結果の行をクリックしたときの処理
 const rowClick = (row: BookType) => {
@@ -157,17 +197,17 @@ defineExpose({
     <!--検索条件-->
     <el-form v-bind:model="bookSearchForm">
         <el-row v-bind:gutter="10">
-        <el-col v-bind:span="6">
+        <el-col :xs="24" :sm="12" :md="6">
             <el-form-item size="small">
             <el-input type="text" v-model="bookSearchForm.title" placeholder="タイトル" clearable />
             </el-form-item>
         </el-col>
-        <el-col v-bind:span="6">
+        <el-col :xs="24" :sm="12" :md="6">
             <el-form-item size="small">
             <el-input type="text" v-model="bookSearchForm.author" placeholder="著者" clearable />
             </el-form-item>
         </el-col>
-        <el-col v-bind:span="12">
+        <el-col :xs="24" :sm="24" :md="12">
             <el-form-item size="small">
             <el-date-picker
                 v-model="bookSearchForm.completeDate"
@@ -177,14 +217,15 @@ defineExpose({
                 end-placeholder="読了日To"
                 format="YYYY年M月D日"
                 value-format="YYYY-MM-DD"
+                style="width: 100%"
             />
             </el-form-item>
         </el-col>
         </el-row>
         <el-row v-bind:gutter="10">
-        <el-col v-bind:span="6">
+        <el-col :xs="24" :sm="12" :md="6">
             <el-form-item>
-            <el-select size="small" v-model="bookSearchForm.genre" placeholder="ジャンル" clearable>
+            <el-select size="small" v-model="bookSearchForm.genre" placeholder="ジャンル" clearable style="width: 100%">
                 <el-option
                 v-for="item in genreList"
                 v-bind:key="item.id"
@@ -194,9 +235,9 @@ defineExpose({
             </el-select>
             </el-form-item>
         </el-col>
-        <el-col v-bind:span="12">
-            <el-form-item>
-                評価：
+        <el-col :xs="24" :sm="12" :md="6">
+            <el-form-item class="rate-form-item">
+                <span class="rate-label">評価：</span>
                 <el-rate
                     v-model="bookSearchForm.rate"
                     size="small"
@@ -207,16 +248,28 @@ defineExpose({
                 />
             </el-form-item>
         </el-col>
-        <el-col v-bind:span="6">
-            <el-row>
-                <el-col v-bind:span="12">
+        <el-col :xs="24" :sm="24" :md="6">
+            <el-row :gutter="10" class="button-row">
+                <el-col :xs="12" :sm="12" :md="12" class="button-col">
                     <el-form-item>
-                        <el-button type="primary" v-on:click="bookSearchClick" v-bind:icon="Search" v-bind:loading="searchLoadFlg">検索</el-button>
+                        <el-button
+                            type="primary"
+                            v-on:click="bookSearchClick"
+                            v-bind:icon="Search"
+                            v-bind:loading="searchLoadFlg"
+                            class="action-button"
+                        >検索</el-button>
                     </el-form-item>
                 </el-col>
-                <el-col v-bind:span="12">
+                <el-col :xs="12" :sm="12" :md="12" class="button-col">
                     <el-form-item>
-                        <el-button type="success" v-on:click="downloadExcel" v-bind:icon="Download" v-bind:loading="downloadFlg">台帳</el-button>
+                        <el-button
+                            type="success"
+                            v-on:click="downloadExcel"
+                            v-bind:icon="Download"
+                            v-bind:loading="downloadFlg"
+                            class="action-button"
+                        >台帳</el-button>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -238,30 +291,38 @@ defineExpose({
     >
         <el-table-column type="index" />
         <el-table-column prop="buyDate" label="購入日" v-bind:formatter="formatDate"/>
+        <!--
         <el-table-column prop="completeDate" label="読了日" v-bind:formatter="formatDate"/>
+        -->
         <el-table-column prop="title" label="タイトル"/>
+        <!--
         <el-table-column prop="author" label="著者"/>
+        -->
         <el-table-column prop="genre.name" label="ジャンル"/>
+        <!--
         <el-table-column label="評価">
         <template #default="scope">
             <el-rate v-model="scope.row.rate" disabled v-bind:colors="['#99A9BF', '#F7BA2A', '#FF9900']"></el-rate>
         </template>
         </el-table-column>
+        -->
     </el-table>
 
     <!-- ページャと合計金額 -->
     <el-row class="pager">
-        <el-col v-bind:span="12">
+        <el-col :xs="24" :sm="12" :md="12">
         <el-pagination
             background
-            layout="total, prev, pager, next"
+            v-bind:layout="pagerLayout"
             v-bind:total="searchBookList.length"
             v-bind:page-size="pageSize"
+            v-bind:pager-count="pageCount"
             v-bind:current-page="currentPage"
+            v-bind:size="pagerSize"
             v-on:current-change="pageChange"
         />
         </el-col>
-        <el-col v-bind:span="12" align="right">
+        <el-col :xs="24" :sm="12" :md="12" id="total">
         合計金額：<span class="totalAmount">{{totalAmount}}</span>&nbsp;円
         </el-col>
     </el-row>
@@ -277,5 +338,18 @@ defineExpose({
 }
 .searchBookList {
   margin-top: 30px;
+}
+
+/* PC以上のサイズ */
+@media (min-width: 992px) {
+    #total {
+        text-align: right;
+    }
+}
+/* スマートフォン縦向き */
+@media (max-width: 767px) {
+    #total {
+        margin-top: 10px;
+    }
 }
 </style>

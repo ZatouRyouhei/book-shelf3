@@ -43,6 +43,24 @@ const rowClick = (selectedBook: BookType): void => {
     paramTargetBook.value.info = selectedBook.infoUrl
     // 更新状態とする
     paramEditFlg.value = true
+    // スマートフォン表示時は編集画面にスクロール
+    scrollToEditOnMobile()
+}
+// スマートフォン表示時に編集画面へスクロールする
+const scrollToEditOnMobile = (): void => {
+    // 画面幅が767px以下（スマートフォン）の場合のみスクロール
+    if (window.innerWidth <= 767) {
+        // 少し遅延させてDOMの更新を待つ
+        setTimeout(() => {
+            const rightPart = document.getElementById('rightPart')
+            if (rightPart) {
+                rightPart.scrollIntoView({
+                    behavior: 'smooth',  // スムーズにスクロール
+                    block: 'start'       // 要素の上端に合わせる
+                })
+            }
+        }, 100)
+    }
 }
 // 登録された時の処理
 const research = () => {
@@ -77,19 +95,29 @@ const setEditFlg = (flg: boolean) => {
 </script>
 
 <template>
-    <el-row>
-        <el-col v-bind:span="24" id="userIcon">
-            <!-- メニュー -->
-            <Menu/>
-        </el-col>
-    </el-row>
-    <el-row>
-        <!-- 画面の左側 -->
-        <el-col :span="12" id="leftPart">
+    <!-- メニューアイコンを浮かせる -->
+    <div id="userIcon">
+        <Menu/>
+    </div>
+    <el-row :gutter="20" class="main-content">
+        <!-- 画面の左側（検索部分） -->
+        <el-col
+            :xs="24"
+            :sm="24"
+            :md="12"
+            :lg="12"
+            id="leftPart"
+        >
             <BookSearch v-on:rowClick="rowClick" ref="bookSearchComponent"/>
         </el-col>
-        <!-- 画面の右側 -->
-        <el-col :span="12" id="rightPart">
+        <!-- 画面の右側（編集部分） -->
+        <el-col
+            :xs="24"
+            :sm="24"
+            :md="12"
+            :lg="12"
+            id="rightPart"
+        >
             <BookEdit
                 v-bind:targetBook="paramTargetBook"
                 v-bind:paramEditFlg="paramEditFlg"
@@ -103,14 +131,53 @@ const setEditFlg = (flg: boolean) => {
 </template>
 
 <style scoped>
+.main-content {
+  padding: 0 10px;
+}
+
 #leftPart, #rightPart {
   margin: 0;
-  padding: 0;
-  height: 70vh;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding: 10px;
+  min-height: 400px;
 }
+
 #userIcon {
-  text-align: right;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+/* タブレット以上のサイズ */
+@media (min-width: 768px) {
+  .main-content {
+    padding: 0 20px;
+  }
+
+  #leftPart, #rightPart {
+    height: 70vh;
+    padding: 20px;
+  }
+}
+
+/* PC以上のサイズ */
+@media (min-width: 992px) {
+  #leftPart, #rightPart {
+    height: 75vh;
+  }
+}
+
+/* スマートフォン縦向き */
+@media (max-width: 767px) {
+  #leftPart {
+    margin-bottom: 200px;
+    min-height: auto;
+  }
+
+  #rightPart {
+    margin-top: 200px;
+    border-top: 1px dotted #000;
+    padding-top: 30px;
+  }
 }
 </style>
