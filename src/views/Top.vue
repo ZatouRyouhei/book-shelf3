@@ -260,10 +260,6 @@ onUnmounted(() => {
 @media (max-width: 767px) {
     #scrollTopButton {
         display: flex;  /* スマートフォンで表示 */
-        right: 15px;
-        bottom: 30px;
-        width: 45px;
-        height: 45px;
     }
 }
 </style>
