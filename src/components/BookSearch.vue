@@ -223,57 +223,57 @@ defineExpose({
         </el-col>
         </el-row>
         <el-row v-bind:gutter="10">
-        <el-col :xs="24" :sm="12" :md="6">
-            <el-form-item>
-            <el-select size="small" v-model="bookSearchForm.genre" placeholder="ジャンル" clearable style="width: 100%">
-                <el-option
-                v-for="item in genreList"
-                v-bind:key="item.id"
-                v-bind:label="item.name"
-                v-bind:value="item.id"
-                />
-            </el-select>
-            </el-form-item>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="6">
-            <el-form-item class="rate-form-item">
-                <span class="rate-label">評価：</span>
-                <el-rate
-                    v-model="bookSearchForm.rate"
-                    size="small"
-                    v-bind:colors="['#99A9BF', '#F7BA2A', '#FF9900']"
-                    v-bind:texts="['面白くない', 'あまり面白くない', '普通', '面白い', 'とても面白い']"
-                    show-text
-                    clearable
-                />
-            </el-form-item>
-        </el-col>
-        <el-col :xs="24" :sm="24" :md="6">
-            <el-row :gutter="10" class="button-row">
-                <el-col :xs="12" :sm="12" :md="12" class="button-col">
-                    <el-form-item>
-                        <el-button
-                            type="primary"
-                            v-on:click="bookSearchClick"
-                            v-bind:icon="Search"
-                            v-bind:loading="searchLoadFlg"
-                            class="action-button"
-                        >検索</el-button>
-                    </el-form-item>
-                </el-col>
-                <el-col :xs="12" :sm="12" :md="12" class="button-col">
-                    <el-form-item>
-                        <el-button
-                            type="success"
-                            v-on:click="downloadExcel"
-                            v-bind:icon="Download"
-                            v-bind:loading="downloadFlg"
-                            class="action-button"
-                        >台帳</el-button>
-                    </el-form-item>
-                </el-col>
-            </el-row>
-        </el-col>
+            <el-col :xs="24" :sm="12" :md="6">
+                <el-form-item>
+                <el-select size="small" v-model="bookSearchForm.genre" placeholder="ジャンル" clearable style="width: 100%">
+                    <el-option
+                    v-for="item in genreList"
+                    v-bind:key="item.id"
+                    v-bind:label="item.name"
+                    v-bind:value="item.id"
+                    />
+                </el-select>
+                </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="12" :md="9">
+                <el-form-item class="rate-form-item">
+                    <span class="rate-label">評価：</span>
+                    <el-rate
+                        v-model="bookSearchForm.rate"
+                        size="small"
+                        v-bind:colors="['#99A9BF', '#F7BA2A', '#FF9900']"
+                        v-bind:texts="['面白くない', 'あまり面白くない', '普通', '面白い', 'とても面白い']"
+                        show-text
+                        clearable
+                    />
+                </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="24" :md="9">
+                <el-row :gutter="10" class="button-row">
+                    <el-col :xs="12" :sm="12" :md="12" class="button-col">
+                        <el-form-item>
+                            <el-button
+                                type="primary"
+                                v-on:click="bookSearchClick"
+                                v-bind:icon="Search"
+                                v-bind:loading="searchLoadFlg"
+                                class="action-button"
+                            >検索</el-button>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :xs="12" :sm="12" :md="12" class="button-col">
+                        <el-form-item>
+                            <el-button
+                                type="success"
+                                v-on:click="downloadExcel"
+                                v-bind:icon="Download"
+                                v-bind:loading="downloadFlg"
+                                class="action-button"
+                            >台帳</el-button>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </el-col>
         </el-row>
     </el-form>
 
@@ -350,6 +350,9 @@ defineExpose({
 @media (max-width: 767px) {
     #total {
         margin-top: 10px;
+    }
+    .searchBookList :deep(.el-table__cell) {
+        font-size: 80%;
     }
 }
 </style>
