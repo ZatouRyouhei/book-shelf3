@@ -51,6 +51,7 @@ export interface SearchCondType {
 	completeDateTo: string
 	genre: number
 	rate: number
+	unComplete: boolean
 }
 
 export interface GoogleBookType {

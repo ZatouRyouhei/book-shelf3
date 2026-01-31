@@ -22,6 +22,7 @@ const bookSearchForm = reactive({
     genre: null, // 0とするとプルダウンの初期値に0と表示されるのでnullとしておく
     rate: 0,
     completeDate: "",
+    unComplete: false,
 })
 // 検索結果一覧
 const searchBookList = ref<BookType[]>([])
@@ -100,6 +101,7 @@ const bookSearch = () => {
         completeDateTo: bookSearchForm.completeDate ? bookSearchForm.completeDate[1] : "",
         genre: bookSearchForm.genre ? bookSearchForm.genre : 0,
         rate: bookSearchForm.rate ? bookSearchForm.rate : 0,
+        unComplete: bookSearchForm.unComplete ? bookSearchForm.unComplete : false,
     }
     axios.post<BookType[]>(Constant.URL_BOOK_SEARCH, searchCond).then((res) => {
         searchBookList.value = res.data
@@ -161,6 +163,7 @@ const downloadExcel = () => {
         completeDateTo: bookSearchForm.completeDate ? bookSearchForm.completeDate[1] : "",
         genre: bookSearchForm.genre ? bookSearchForm.genre : 0,
         rate: bookSearchForm.rate ? bookSearchForm.rate : 0,
+        unComplete: bookSearchForm.unComplete ? bookSearchForm.unComplete : false,
     }
     axios.post(Constant.URL_BOOK_DOWNLOAD, searchCond, {
         responseType: "blob",
@@ -197,12 +200,12 @@ defineExpose({
     <!--検索条件-->
     <el-form v-bind:model="bookSearchForm">
         <el-row v-bind:gutter="10">
-        <el-col :xs="24" :sm="12" :md="6">
+        <el-col :xs="24" :sm="24" :md="6">
             <el-form-item size="small">
             <el-input type="text" v-model="bookSearchForm.title" placeholder="タイトル" clearable />
             </el-form-item>
         </el-col>
-        <el-col :xs="24" :sm="12" :md="6">
+        <el-col :xs="24" :sm="24" :md="6">
             <el-form-item size="small">
             <el-input type="text" v-model="bookSearchForm.author" placeholder="著者" clearable />
             </el-form-item>
@@ -223,7 +226,7 @@ defineExpose({
         </el-col>
         </el-row>
         <el-row v-bind:gutter="10">
-            <el-col :xs="24" :sm="12" :md="6">
+            <el-col :xs="24" :sm="24" :md="6">
                 <el-form-item>
                 <el-select size="small" v-model="bookSearchForm.genre" placeholder="ジャンル" clearable style="width: 100%">
                     <el-option
@@ -235,7 +238,7 @@ defineExpose({
                 </el-select>
                 </el-form-item>
             </el-col>
-            <el-col :xs="24" :sm="12" :md="9">
+            <el-col :xs="24" :sm="24" :md="9">
                 <el-form-item class="rate-form-item">
                     <span class="rate-label">評価：</span>
                     <el-rate
@@ -248,7 +251,17 @@ defineExpose({
                     />
                 </el-form-item>
             </el-col>
-            <el-col :xs="24" :sm="24" :md="9">
+            <el-col :xs="24" :sm="24" :md="3">
+                <el-form-item>
+                    <el-switch
+                        v-model="bookSearchForm.unComplete"
+                        size="large"
+                        inline-prompt
+                        active-text="未読"
+                    />
+                </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="24" :md="6">
                 <el-row :gutter="10" class="button-row">
                     <el-col :xs="12" :sm="12" :md="12" class="button-col">
                         <el-form-item>

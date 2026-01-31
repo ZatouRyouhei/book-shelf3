@@ -207,12 +207,12 @@ onUnmounted(() => {
 /* スマートフォン縦向き */
 @media (max-width: 767px) {
   #leftPart {
-    margin-bottom: 200px;
+    margin-bottom: 220px;
     min-height: auto;
   }
 
   #rightPart {
-    margin-top: 200px;
+    margin-top: 220px;
     border-top: 1px dotted #000;
     padding-top: 30px;
   }
