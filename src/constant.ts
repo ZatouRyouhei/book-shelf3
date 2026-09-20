@@ -11,7 +11,7 @@ const URL_BOOK_SEARCH = URL_BASE + 'book/search/'
 const URL_BOOK_DOWNLOAD = URL_BASE + 'book/download/'
 const URL_BOOK_DELETE = URL_BASE + 'book/delete/'
 const URL_BOOK_BATCH = URL_BASE + 'book/batch/'
-const URL_GOOGLE_SEARCH_BOOK = "https://www.googleapis.com/books/v1/volumes?q="
+const URL_GOOGLE_SEARCH_BOOK = `https://www.googleapis.com/books/v1/volumes?key=${import.meta.env.VITE_GOOGLE_BOOKS_API_KEY}&q=`
 const PAGE_SIZE = 15
 const PAGE_COUNT = 5
 
