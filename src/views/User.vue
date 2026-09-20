@@ -133,36 +133,21 @@ const resetForm = (formEl: FormInstance | undefined) => {
 const deleteBook = () => {
     deleteLoadFlg.value = true
     axios.post<string>(Constant.URL_USER_DELETE + userRegistForm.id).then((res) => {
-        if (res.data == "0") {
-            // 使用されているため削除不可
-            ElMessage({
-                showClose: true,
-                message: '使用中のため削除できません。',
-                type: 'error',
-            })
-        } else if (res.data == "1") {
-            // 削除完了
-            ElMessage({
-                showClose: true,
-                message: '削除が完了しました。',
-                type: 'success',
-            })
-            // フォームをリセットする。
-            resetForm(userFormRef.value)
-            // 再検索する
-            searchUser()
-        } else {
-            ElMessage({
-                showClose: true,
-                message: '削除できませんでした。',
-                type: 'error',
-            })
-        }
+        // 削除完了
+        ElMessage({
+            showClose: true,
+            message: '削除が完了しました。',
+            type: 'success',
+        })
+        // フォームをリセットする。
+        resetForm(userFormRef.value)
+        // 再検索する
+        searchUser()
     }).catch((error) => {
         console.log("削除失敗", error.response)
         ElMessage({
             showClose: true,
-            message: '削除が失敗しました。',
+            message: error.response.data,
             type: 'error',
         })
     }).finally(() => {
