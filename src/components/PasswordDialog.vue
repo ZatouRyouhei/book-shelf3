@@ -7,7 +7,7 @@ import {useUserStore} from "@/stores/user"
 import Constant from "@/constant"
 import { ElMessage } from 'element-plus'
 import type {FormInstance, FormRules} from "element-plus"
-import sha512 from 'js-sha512'
+// import sha512 from 'js-sha512'
 
 // store設定
 const userStore = useUserStore()
@@ -56,7 +56,8 @@ const changePassword = async (formEl: FormInstance | undefined) => {
             } else {
                 const userObj: UserType = {
                     id: userStore.id,
-                    password: sha512.sha512(passwordForm.newPassword),
+                    //password: sha512.sha512(passwordForm.newPassword),
+                    password: passwordForm.newPassword,
                     name: "",
                     roleName: "",
                     mailAddress: "",

@@ -5,7 +5,7 @@ import {SwitchButton} from '@element-plus/icons-vue'
 import axios from "axios"
 import type {UserType} from "@/interfaces"
 import Constant from "@/constant"
-import sha512 from 'js-sha512'
+//import sha512 from 'js-sha512'
 import {useUserStore} from "@/stores/user"
 import {useRouter} from "vue-router"
 import { ElMessage } from 'element-plus'
@@ -45,7 +45,8 @@ const onSubmit = async (formEl: FormInstance | undefined) => {
             loginFlg.value = true
             const loginObj: UserType = {
                 id: form.userId,
-                password: sha512.sha512(form.password),
+                // password: sha512.sha512(form.password),
+                password:form.password,
                 name: "",
                 roleName: "",
                 mailAddress: "",
