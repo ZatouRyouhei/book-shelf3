@@ -22,8 +22,7 @@ const errorList = ref<BatchErrorType[]>([])
 const uploadRef = ref<UploadInstance>()
 const uploadUrl = ref<string>(Constant.URL_BOOK_BATCH)
 const uploadHeaders = reactive({
-    Authorization: 'Bearer ' + userStore.token,
-    'Content-Type': 'text/csv'
+    Authorization: 'Bearer ' + userStore.token
 });
 
 // ユーザ一覧取得
@@ -46,25 +45,31 @@ const onSuccess = (response: any, uploadFile: UploadFile, uploadFiles: UploadFil
     console.log("登録成功 : " + response)
     ElMessage({
         showClose: true,
-        message: '登録が完了しました。',
+        message: response,
         type: 'success',
     })
 }
 // アップロード失敗
 const onError = (response: any, uploadFile: UploadFile, uploadFiles: UploadFiles) => {
-    console.log("登録失敗 : " + response)
-    // "UploadAjaxError: " の部分を削除して、純粋なJSON文字列にする
-    const responseString = String(response)
-    const jsonString = responseString.replace('UploadAjaxError: ', '');
-    // JSON文字列をJavaScriptの配列オブジェクトに変換する
-    const dataArray = JSON.parse(jsonString)
-    errorList.value = dataArray
-    console.log(errorList)
-    ElMessage({
-        showClose: true,
-        message: '登録が失敗しました。',
-        type: 'error',
-    })
+    if (response.status === 400) {
+        // バリデーションエラー
+        // JSON文字列をJavaScriptの配列オブジェクトに変換する
+        const dataArray = JSON.parse(response.message)
+        errorList.value = dataArray
+        console.log(errorList)
+        ElMessage({
+            showClose: true,
+            message: '登録が失敗しました。',
+            type: 'error',
+        })
+    } else {
+        // その他のエラー
+        ElMessage({
+            showClose: true,
+            message: response.message,
+            type: 'error',
+        })
+    }
 }
 // 初期処理
 onMounted(() => {
@@ -89,6 +94,7 @@ onMounted(() => {
             </el-button>
             <el-upload
                 ref="uploadRef"
+                name="uploadFile"
                 v-bind:action="uploadUrl"
                 v-bind:headers="uploadHeaders"
                 v-bind:limit="1"
