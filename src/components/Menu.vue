@@ -4,6 +4,7 @@ import {UserFilled} from '@element-plus/icons-vue'
 import {useUserStore} from "@/stores/user"
 import {useRouter, useRoute} from "vue-router"
 import PasswordDialog from "@/components/PasswordDialog.vue"
+import StructureDialog from "@/components/StructureDialog.vue"
 
 // vue router設定
 const router = useRouter()
@@ -12,6 +13,8 @@ const route = useRoute()
 const userStore = useUserStore()
 // パスワードダイアログのオープンフラグ
 const passwordDialogFlg = ref<boolean>(false)
+// 構成図ダイアログのオープンフラグ
+const structureDialogFlg = ref<boolean>(false)
 // 現在のパスを取得
 const currentPath = computed(
     (): string => {
@@ -30,6 +33,14 @@ const passwordDialogOpen = () => {
 // パスワード変更ダイアログをクローズ
 const passwordDialogClose = () => {
     passwordDialogFlg.value = false
+}
+// 構成図ダイアログをオープン
+const structureDialogOpen = () => {
+    structureDialogFlg.value = true
+}
+// パスワード変更ダイアログをクローズ
+const structureDialogClose = () => {
+    structureDialogFlg.value = false
 }
 // トップ画面へ遷移
 const toTop = () => {
@@ -50,6 +61,7 @@ const toAdmin = () => {
                 <el-dropdown-item divided v-on:click="passwordDialogOpen">パスワード変更</el-dropdown-item>
                 <el-dropdown-item v-if="userStore.roleName == 'ADMIN' && !currentPath.startsWith('/admin')" v-on:click="toAdmin">管理</el-dropdown-item>
                 <el-dropdown-item v-if="currentPath != '/about'" v-on:click="toTop">トップ</el-dropdown-item>
+                <el-dropdown-item v-on:click="structureDialogOpen">構成図</el-dropdown-item>
                 <el-dropdown-item v-on:click="logout">ログアウト</el-dropdown-item>
             </el-dropdown-menu>
         </template>
@@ -57,4 +69,7 @@ const toAdmin = () => {
 
     <!-- パスワード変更ダイアログ -->
     <PasswordDialog v-bind:passwordDialogVisible="passwordDialogFlg" v-on:closeDialog="passwordDialogClose"/>
+
+    <!-- 構成図ダイアログ -->
+    <StructureDialog v-bind:structureDialogVisible="structureDialogFlg" v-on:closeDialog="structureDialogClose"/>
 </template>
